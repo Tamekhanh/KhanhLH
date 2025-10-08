@@ -1,28 +1,32 @@
 import React, { Component } from 'react';
-import { FlatList, View } from 'react-native';
+import { FlatList ,View} from 'react-native';
 import { ListItem, Avatar } from 'react-native-elements';
-import Dishdetail from './DishdetailComponent';
+//import Dishdetail from './DishdetailComponent';
+import { DISHES } from '../shared/dishes';
 
 class Menu extends Component {
-constructor(props) {
+  constructor(props) {
     super(props);
     this.state = {
-      selectedDish: null
+      //selectedDish: null,
+      dishes: DISHES
     };
+    console.log(this.state.dishes);
   }
   render() {
     return (
-        <View style={{ flex: 1 }}>
-        <FlatList data={this.props.dishes}
+      //<View style={{ flex: 1 }}>
+          <FlatList data={this.state.dishes}
         renderItem={({ item, index }) => this.renderMenuItem(item, index)}
         keyExtractor={(item) => item.id.toString()} />
-        <Dishdetail dish={this.state.selectedDish} />
-      </View>
+        //<Dishdetail dish={this.state.selectedDish} />
+      //</View>
     );
   }
   renderMenuItem(item, index) {
+    const { navigate } = this.props.navigation;
     return (
-      <ListItem key={index} onPress={() => this.onDishSelect(item)}>
+      <ListItem key={index} onPress={() => navigate('Dishdetail', { dishId: item.id })}>
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           <Avatar source={require('./images/uthappizza.png')} />
           <ListItem.Content style={{ marginLeft: 10 }}>
@@ -33,8 +37,8 @@ constructor(props) {
       </ListItem>
     );
   }
-  onDishSelect(item) {
+  /*onDishSelect(item) {
     this.setState({ selectedDish: item });
-  }
+  }*/
 }
 export default Menu;
