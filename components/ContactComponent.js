@@ -4,22 +4,18 @@ import { Text, View, StyleSheet } from 'react-native';
 import { Card } from 'react-native-elements';
 
 const Contact = () => {
-  return (
-    <View>
+    return (
       <Card>
         <Card.Title>Contact Information</Card.Title>
         <Card.Divider />
-        <Text style={styles.text}>
-          121, Clear Water Bay Road{'\n'}
-          Clear Water Bay, Kowloon{'\n'}
-          HONG KONG{'\n'}
-          Tel: +852 1234 5678{'\n'}
-          Fax: +852 8765 4321{'\n'}
-          Email:confusion@food.net
-        </Text>
+        <Text style={{ margin: 10 }}>121, Clear Water Bay Road</Text>
+        <Text style={{ margin: 10 }}>Clear Water Bay, Kowloon</Text>
+        <Text style={{ margin: 10 }}>HONG KONG</Text>
+        <Text style={{ margin: 10 }}>Tel: +852 1234 5678</Text>
+        <Text style={{ margin: 10 }}>Fax: +852 8765 4321</Text>
+        <Text style={{ margin: 10 }}>Email: confusion@food.net</Text>
       </Card>
-    </View>
-  );
+    );
 };
 
 const styles = StyleSheet.create({
