@@ -1,0 +1,1 @@
+export const baseUrl = 'https://khanhlh.onrender.com/';

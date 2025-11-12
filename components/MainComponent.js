@@ -11,6 +11,19 @@ import Home from './HomeComponent';
 import Contact from './ContactComponent';
 import About from './AboutComponent';
 
+import { baseUrl } from '../shared/baseUrl';
+// redux
+import { connect } from 'react-redux';
+import { fetchLeaders, fetchDishes, fetchComments, fetchPromos  } from '../redux/ActionCreators';
+
+const mapDispatchToProps = (dispatch) => ({
+  fetchLeaders: () => dispatch(fetchLeaders()),
+  fetchDishes: () => dispatch(fetchDishes()),
+  fetchComments: () => dispatch(fetchComments()),
+  fetchPromotions: () => dispatch(fetchPromos())
+
+});
+
 function HomeNavigatorScreen() {
   const HomeNavigator = createStackNavigator();
   return (
@@ -126,7 +139,7 @@ function CustomDrawerContent(props) {
     <DrawerContentScrollView {...props}>
       <View style={{ backgroundColor: '#7cc', height: 80, alignItems: 'center', flexDirection: 'row' }}>
         <View style={{ flex: 1 }}>
-          <Image source={require('./images/logo.png')} style={{ margin: 10, width: 80, height: 60 }} />
+          <Image source={{ uri: baseUrl + 'images/logo.png' }} style={{ margin: 10, width: 80, height: 60 }} />
         </View>
         <View style={{ flex: 2 }}>
           <Text style={{ color: '#fff', fontSize: 22, fontWeight: 'bold' }}>KhanhLH & Friends</Text>
@@ -140,7 +153,6 @@ function CustomDrawerContent(props) {
   );
 }
 
-
 class Main extends Component {
   render() {
     return (
@@ -149,5 +161,12 @@ class Main extends Component {
       </NavigationContainer>
     );
   }
+  componentDidMount() {
+    // redux
+    this.props.fetchLeaders();
+    this.props.fetchDishes();
+    this.props.fetchComments();
+    this.props.fetchPromotions();
+  }
 }
-export default Main;
+export default connect(null, mapDispatchToProps)(Main);

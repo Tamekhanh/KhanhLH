@@ -3,20 +3,29 @@ import React, { Component } from 'react';
 import { Text, FlatList, View } from 'react-native';
 import { ScrollView } from 'react-native-virtualized-view';
 import { Card, ListItem, Avatar } from 'react-native-elements';
-import { LEADERS } from '../shared/leaders';
+import { connect } from 'react-redux';
+
+import { baseUrl } from '../shared/baseUrl';
+
+
+const mapStateToProps = (state) => {
+  return {
+    leaders: state.leaders
+  }
+};
 
 class About extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      leaders: LEADERS
-    };
+    // this.state = {
+    //   leaders: LEADERS
+    // };
   }
   render() {
     return (
       <ScrollView>
         <RenderHistory />
-        <RenderLeadership leaders={this.state.leaders} />
+        <RenderLeadership leaders={this.props.leaders.leaders} />
       </ScrollView>
     );
   }
@@ -51,7 +60,7 @@ class RenderLeadership extends Component {
     return (
       <ListItem>
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          <Avatar rounded source={require('./images/alberto.png')} />
+          <Avatar rounded source={{ uri: baseUrl + item.image }} />
           <ListItem.Content>
             <ListItem.Title style={{ fontWeight: 'bold' }}>{item.name}</ListItem.Title>
             <ListItem.Subtitle>{item.description}</ListItem.Subtitle>
@@ -62,4 +71,4 @@ class RenderLeadership extends Component {
   }
 }
 
-export default About;
+export default connect(mapStateToProps)(About);
