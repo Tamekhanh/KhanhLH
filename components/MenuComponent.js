@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { FlatList ,View} from 'react-native';
+import { FlatList ,View, Text} from 'react-native';
 import { ListItem, Avatar } from 'react-native-elements';
 //import Dishdetail from './DishdetailComponent';
 // import { DISHES } from '../shared/dishes';
 import { baseUrl } from '../shared/baseUrl';
+import Loading from './LoadingComponent';
 
 // redux
 import { connect } from 'react-redux';
@@ -23,14 +24,17 @@ class Menu extends Component {
     console.log(this.props.dishes);
   }
   render() {
-    return (
-      //<View style={{ flex: 1 }}>
+    if (this.props.dishes.isLoading) {
+        return (<Loading />);
+      } else if (this.props.dishes.errMess) {
+        return (<Text>{this.props.errMess}</Text>);
+      } else {
+        return (
           <FlatList data={this.props.dishes.dishes}
-        renderItem={({ item, index }) => this.renderMenuItem(item, index)}
-        keyExtractor={(item) => item.id.toString()} />
-        //<Dishdetail dish={this.state.selectedDish} />
-      //</View>
-    );
+          renderItem={({ item, index }) => this.renderMenuItem(item, index)}
+          keyExtractor={(item) => item.id.toString()} />
+        );
+      }
   }
   renderMenuItem(item, index) {
     const { navigate } = this.props.navigation;

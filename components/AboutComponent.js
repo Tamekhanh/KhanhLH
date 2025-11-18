@@ -6,7 +6,7 @@ import { Card, ListItem, Avatar } from 'react-native-elements';
 import { connect } from 'react-redux';
 
 import { baseUrl } from '../shared/baseUrl';
-
+import Loading from './LoadingComponent';
 
 const mapStateToProps = (state) => {
   return {
@@ -25,7 +25,10 @@ class About extends Component {
     return (
       <ScrollView>
         <RenderHistory />
-        <RenderLeadership leaders={this.props.leaders.leaders} />
+        <RenderLeadership
+          leaders={this.props.leaders.leaders}
+          isLoading={this.props.leaders.isLoading}
+          errMess={this.props.leaders.errMess} />
       </ScrollView>
     );
   }
@@ -46,15 +49,33 @@ class RenderHistory extends Component {
 
 class RenderLeadership extends Component {
   render() {
-    return (
-      <Card>
-        <Card.Title>Corporate Leadership</Card.Title>
-        <Card.Divider />
-        <FlatList data={this.props.leaders}
-          renderItem={({ item, index }) => this.renderLeaderItem(item, index)}
-          keyExtractor={(item) => item.id.toString()} />
-      </Card>
-    );
+    if (this.props.isLoading) {
+      return (
+        <Card>
+          <Card.Title>Corporate Leadership</Card.Title>
+          <Card.Divider />
+          <Loading />
+        </Card>
+      );
+    } else if (this.props.errMess) {
+      return (
+        <Card>
+          <Card.Title>Corporate Leadership</Card.Title>
+          <Card.Divider />
+          <Text>{this.props.errMess}</Text>
+        </Card>
+      );
+    } else {
+      return (
+        <Card>
+          <Card.Title>Corporate Leadership</Card.Title>
+          <Card.Divider />
+          <FlatList data={this.props.leaders}
+            renderItem={({ item, index }) => this.renderLeaderItem(item, index)}
+            keyExtractor={(item) => item.id.toString()} />
+        </Card>
+      );
+    }
   }
   renderLeaderItem(item, index) {
     return (

@@ -6,12 +6,19 @@ import { baseUrl } from '../shared/baseUrl';
 
 import { connect } from 'react-redux';
 
+import { postFavorite } from '../redux/ActionCreators';
+
 const mapStateToProps = (state) => {
   return {
     dishes: state.dishes,
-    comments: state.comments
+    comments: state.comments,
+    favorites: state.favorites
   }
 };
+
+const mapDispatchToProps = (dispatch) => ({
+  postFavorite: (dishId) => dispatch(postFavorite(dishId))
+});
 
 class RenderDish extends Component {
   render() {
@@ -36,17 +43,17 @@ class RenderDish extends Component {
 class Dishdetail extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      // dishes: DISHES,
-      // comments: COMMENTS,
-      favorites: []
-    };
+    // this.state = {
+    //   // dishes: DISHES,
+    //   // comments: COMMENTS,
+    //   favorites: []
+    // };
   }
   render() {
     const dishId = parseInt(this.props.route.params.dishId);
     const dish = this.props.dishes.dishes[dishId];
     const comments = this.props.comments.comments.filter((cmt) => cmt.dishId === dishId);
-    const favorite = this.state.favorites.some((el) => el === dishId);
+    const favorite = this.props.favorites.some((el) => el === dishId);
     return (
       <ScrollView>
         <RenderDish dish={dish} favorite={favorite} onPressFavorite={() => this.markFavorite(dishId)} />
@@ -55,7 +62,7 @@ class Dishdetail extends Component {
     );
   }
   markFavorite(dishId) {
-    this.setState({ favorites: this.state.favorites.concat(dishId)});
+    this.props.postFavorite(dishId);
   }
 }
 
@@ -84,4 +91,4 @@ class RenderComments extends Component {
 }
 
 
-export default connect(mapStateToProps)(Dishdetail);
+export default connect(mapStateToProps, mapDispatchToProps)(Dishdetail);

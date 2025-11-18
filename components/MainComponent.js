@@ -10,6 +10,7 @@ import Dishdetail from './DishdetailComponent';
 import Home from './HomeComponent';
 import Contact from './ContactComponent';
 import About from './AboutComponent';
+import Reservation from './ReservationComponent';
 
 import { baseUrl } from '../shared/baseUrl';
 // redux
@@ -92,9 +93,14 @@ function MainNavigatorScreen() {
           title: 'Contact Us', headerShown: false,
           drawerIcon: ({ focused, size }) => (<Icon name='contacts' size={size} color={focused ? '#7cc' : '#ccc'} />)
         }} />
+        <MainNavigator.Screen name='ReservationScreen' component={ReservationNavigatorScreen}
+        options={{
+          title: 'Reserve Table', headerShown: false,
+          drawerIcon: ({ focused, size }) => (<Icon name='cutlery' type='font-awesome' size={size} color={focused ? '#7cc' : '#ccc'} />)
+        }} />
     </MainNavigator.Navigator>
   );
-}0
+}
 
 function AboutNavigatorScreen() {
   const AboutNavigator = createStackNavigator();
@@ -150,6 +156,24 @@ function CustomDrawerContent(props) {
         icon={({ focused, color, size }) => <Icon name='help' size={size} color={focused ? '#7cc' : '#ccc'} />}
         onPress={() => Linking.openURL('https://reactnavigation.org/docs/getting-started')} />
     </DrawerContentScrollView>
+  );
+}
+
+function ReservationNavigatorScreen() {
+  const ReservationNavigator = createStackNavigator();
+  return (
+    <ReservationNavigator.Navigator initialRouteName='Reservation'
+      screenOptions={{
+        headerStyle: { backgroundColor: '#7cc' },
+        headerTintColor: '#fff',
+        headerTitleStyle: { color: '#fff' }
+      }}>
+      <ReservationNavigator.Screen name='Reservation' component={Reservation}
+        options={({ navigation }) => ({
+          headerTitle: 'Reserve Table',
+          headerLeft: () => (<Icon name='menu' size={36} color='#fff' onPress={() => navigation.toggleDrawer()} />)
+        })} />
+    </ReservationNavigator.Navigator>
   );
 }
 
