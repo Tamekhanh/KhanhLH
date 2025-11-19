@@ -70,6 +70,24 @@ const addComments = (comments) => ({
   payload: comments
 });
 
+export const postComment = (dishId, rating, author, comment) => (dispatch) => {
+  const newComment = {
+    dishId,
+    rating,
+    author,
+    comment,
+    date: new Date().toISOString()
+  };
+  setTimeout(() => {
+    dispatch(addComment(newComment));
+  }, 1000);
+};
+
+export const addComment = (comment) => ({
+  type: ActionTypes.ADD_COMMENT,
+  payload: comment
+});
+
 // promotions
 export const fetchPromos = () => (dispatch) => {
   dispatch(promosLoading());
