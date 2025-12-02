@@ -2,9 +2,11 @@
 import React from 'react';
 import { Text, View, StyleSheet } from 'react-native';
 import { Card } from 'react-native-elements';
+import * as Animatable from 'react-native-animatable';
 
 const Contact = () => {
-    return (
+  return (
+    <Animatable.View animation='fadeInDown' duration={2000} delay={1000}>
       <Card>
         <Card.Title>Contact Information</Card.Title>
         <Card.Divider />
@@ -15,7 +17,8 @@ const Contact = () => {
         <Text style={{ margin: 10 }}>Fax: +852 8765 4321</Text>
         <Text style={{ margin: 10 }}>Email: confusion@food.net</Text>
       </Card>
-    );
+    </Animatable.View>
+  );
 };
 
 const styles = StyleSheet.create({

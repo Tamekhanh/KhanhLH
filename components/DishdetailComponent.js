@@ -1,10 +1,12 @@
 import React, { Component, useState } from 'react';
-import { View, Text, FlatList, Modal, Button, StyleSheet } from 'react-native';
+import { View, Text, FlatList, Modal, Button, StyleSheet, PanResponder, Alert } from 'react-native';
 import { Card, Image, Icon, Rating, Input } from 'react-native-elements';
 import { ScrollView } from 'react-native-virtualized-view';
 import { baseUrl } from '../shared/baseUrl';
 import { connect } from 'react-redux';
 import { postFavorite, postComment } from '../redux/ActionCreators';
+
+import * as Animatable from 'react-native-animatable';
 
 const mapStateToProps = (state) => {
   return {
@@ -19,10 +21,33 @@ const mapDispatchToProps = (dispatch) => ({
   postComment: (dishId, rating, author, comment) => dispatch(postComment(dishId, rating, author, comment))
 });
 
-const RenderDish = React.memo(({ dish, favorite, onPressFavorite, onPressComment }) => {
+const RenderDish = ({ dish, favorite, onPressFavorite, onPressComment }) => {
+  const viewRef = React.useRef(null);
+  // gesture
+  const recognizeDrag = ({ moveX, moveY, dx, dy }) => {
+    if (dx < -200) return 1; // right to left
+    return 0;
+  };
+  const panResponder = PanResponder.create({
+    onStartShouldSetPanResponder: (e, gestureState) => { return true; },
+    onPanResponderEnd: (e, gestureState) => {
+      if (recognizeDrag(gestureState) === 1) {
+        Alert.alert(
+          'Add Favorite',
+          'Are you sure you wish to add ' + dish.name + ' to favorite?',
+          [
+            { text: 'Cancel', onPress: () => { /* nothing */ } },
+            { text: 'OK', onPress: () => { favorite ? alert('Already favorite') : onPressFavorite() } },
+          ]
+        );
+      }
+      return true;
+    }
+  });
+
   if (dish != null) {
     return (
-      <Card>
+      <Card {...panResponder.panHandlers}>
         <Image source={{ uri: baseUrl + dish.image }} style={{ width: '100%', height: 100, flexGrow: 1, alignItems: 'center', justifyContent: 'center' }}>
           <Card.FeaturedTitle>{dish.name}</Card.FeaturedTitle>
         </Image>
@@ -38,9 +63,9 @@ const RenderDish = React.memo(({ dish, favorite, onPressFavorite, onPressComment
     );
   }
   return (<View />);
-});
+};
 
-const RenderComments = React.memo(({ comments }) => {
+const RenderComments = ({ comments }) => {
   const renderCommentItem = ({ item, index }) => {
     return (
       <View key={index} style={{ margin: 10 }}>
@@ -52,15 +77,17 @@ const RenderComments = React.memo(({ comments }) => {
   };
 
   return (
-    <Card>
-      <Card.Title>Comments</Card.Title>
-      <Card.Divider />
-      <FlatList data={comments}
-        renderItem={renderCommentItem}
-        keyExtractor={(item) => item.id.toString()} />
-    </Card>
+    <Animatable.View animation='fadeInUp' duration={2000} delay={1000}>
+      <Card>
+        <Card.Title>Comments</Card.Title>
+        <Card.Divider />
+        <FlatList data={comments}
+          renderItem={renderCommentItem}
+          keyExtractor={(item) => item.id.toString()} />
+      </Card>
+    </Animatable.View>
   );
-});
+};
 
 const CommentForm = ({ dishId, isVisible, onClose, onSubmit }) => {
   const [rating, setRating] = useState(5);
@@ -143,19 +170,23 @@ class Dishdetail extends Component {
 
     return (
       <ScrollView>
-        <RenderDish
-          dish={dish}
-          favorite={favorite}
-          onPressFavorite={() => this.markFavorite(dishId)}
-          onPressComment={() => this.toggleModal()}
-        />
-        <RenderComments comments={comments} />
-        <CommentForm
-          dishId={dishId}
-          isVisible={this.state.showModal}
-          onClose={() => this.toggleModal()}
-          onSubmit={(dishId, rating, author, comment) => this.handleComment(dishId, rating, author, comment)}
-        />
+        <Animatable.View animation='fadeInDown' duration={2000} delay={1000}>
+          <RenderDish
+            dish={dish}
+            favorite={favorite}
+            onPressFavorite={() => this.markFavorite(dishId)}
+            onPressComment={() => this.toggleModal()}
+          />
+        </Animatable.View>
+        <Animatable.View animation='fadeInUp' duration={2000} delay={1000}>
+          <RenderComments comments={comments} />
+          <CommentForm
+            dishId={dishId}
+            isVisible={this.state.showModal}
+            onClose={() => this.toggleModal()}
+            onSubmit={(dishId, rating, author, comment) => this.handleComment(dishId, rating, author, comment)}
+          />
+        </Animatable.View>
       </ScrollView>
     );
   }
