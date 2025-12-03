@@ -25,13 +25,17 @@ const RenderDish = ({ dish, favorite, onPressFavorite, onPressComment }) => {
   const viewRef = React.useRef(null);
   // gesture
   const recognizeDrag = ({ moveX, moveY, dx, dy }) => {
-    if (dx < -200) return 1; // right to left
-    return 0;
+    if (dx < -200) return true; // right to left
+    return false;
+  };
+  const recognizeComment = ({ moveX, moveY, dx, dy }) => {
+    if (dx > 200) return true; // left to right
+    return false;
   };
   const panResponder = PanResponder.create({
     onStartShouldSetPanResponder: (e, gestureState) => { return true; },
     onPanResponderEnd: (e, gestureState) => {
-      if (recognizeDrag(gestureState) === 1) {
+      if (recognizeDrag(gestureState)) {
         Alert.alert(
           'Add Favorite',
           'Are you sure you wish to add ' + dish.name + ' to favorite?',
@@ -40,6 +44,8 @@ const RenderDish = ({ dish, favorite, onPressFavorite, onPressComment }) => {
             { text: 'OK', onPress: () => { favorite ? alert('Already favorite') : onPressFavorite() } },
           ]
         );
+      } else if (recognizeComment(gestureState)) {
+        onPressComment();
       }
       return true;
     }
